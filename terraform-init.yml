@@ -8,6 +8,9 @@ parameters:
   backendKey: ''
 
 steps:
+# -----------------------------
+# Install Terraform
+# -----------------------------
 - task: Bash@3
   displayName: Install Terraform
   inputs:
@@ -20,6 +23,9 @@ steps:
       sudo mv terraform /usr/local/bin/
       terraform version
 
+# -----------------------------
+# Terraform Init
+# -----------------------------
 - task: AzureCLI@2
   displayName: Terraform Init
   inputs:
@@ -30,8 +36,19 @@ steps:
       set -e
       cd ${{ parameters.workingDirectory }}
 
+      # -----------------------------
+      # Use SP / Federated credentials
+      # -----------------------------
+      export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+      export ARM_TENANT_ID=$(az account show --query tenantId -o tsv)
+      export ARM_CLIENT_ID=$(az account show --query user.name -o tsv)
+      # ARM_CLIENT_SECRET not needed for federated SP
+
+      echo "Initializing Terraform backend..."
       terraform init -migrate-state \
         -backend-config="resource_group_name=${{ parameters.backendResourceGroup }}" \
         -backend-config="storage_account_name=${{ parameters.backendStorageAccount }}" \
         -backend-config="container_name=${{ parameters.backendContainer }}" \
         -backend-config="key=${{ parameters.backendKey }}"
+
+      echo "Terraform backend initialized successfully."
