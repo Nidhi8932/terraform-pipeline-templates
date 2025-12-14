@@ -1,7 +1,3 @@
-# ============================= #
-# Terraform Init - Steps Template
-# ============================= #
-
 parameters:
   terraformVersion: ''
   workingDirectory: ''
@@ -22,7 +18,7 @@ steps:
       wget -q https://releases.hashicorp.com/terraform/${{ parameters.terraformVersion }}/terraform_${{ parameters.terraformVersion }}_linux_amd64.zip
       unzip -q terraform_${{ parameters.terraformVersion }}_linux_amd64.zip
       sudo mv terraform /usr/local/bin/
-      terraform --version
+      terraform version
 
 - task: AzureCLI@2
   displayName: Terraform Init
