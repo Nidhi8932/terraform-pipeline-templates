@@ -1,28 +1,41 @@
-parameters:
-terraformVersion: '1.5.7'
-workingDirectory: ''
-serviceConnection: ''
-backendResourceGroup: ''
-backendStorageAccount: ''
-backendContainer: ''
-backendKey: ''
+# ============================= #
+# Terraform Init - Steps Template
+# ============================= #
 
+parameters:
+  terraformVersion: ''
+  workingDirectory: ''
+  serviceConnection: ''
+  backendResourceGroup: ''
+  backendStorageAccount: ''
+  backendContainer: ''
+  backendKey: ''
 
 steps:
-- task: TerraformInstaller@1
-displayName: Install Terraform
-inputs:
-terraformVersion: ${{ parameters.terraformVersion }}
+- task: Bash@3
+  displayName: Install Terraform
+  inputs:
+    targetType: inline
+    script: |
+      set -e
+      echo "Installing Terraform v${{ parameters.terraformVersion }}"
+      wget -q https://releases.hashicorp.com/terraform/${{ parameters.terraformVersion }}/terraform_${{ parameters.terraformVersion }}_linux_amd64.zip
+      unzip -q terraform_${{ parameters.terraformVersion }}_linux_amd64.zip
+      sudo mv terraform /usr/local/bin/
+      terraform --version
 
+- task: AzureCLI@2
+  displayName: Terraform Init
+  inputs:
+    azureSubscription: ${{ parameters.serviceConnection }}
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      set -e
+      cd ${{ parameters.workingDirectory }}
 
-- task: TerraformTaskV4@4
-displayName: Terraform Init
-inputs:
-provider: 'azurerm'
-command: 'init'
-workingDirectory: ${{ parameters.workingDirectory }}
-backendServiceArm: ${{ parameters.serviceConnection }}
-backendAzureRmResourceGroupName: ${{ parameters.backendResourceGroup }}
-backendAzureRmStorageAccountName: ${{ parameters.backendStorageAccount }}
-backendAzureRmContainerName: ${{ parameters.backendContainer }}
-backendAzureRmKey: ${{ parameters.backendKey }}
+      terraform init \
+        -backend-config="resource_group_name=${{ parameters.backendResourceGroup }}" \
+        -backend-config="storage_account_name=${{ parameters.backendStorageAccount }}" \
+        -backend-config="container_name=${{ parameters.backendContainer }}" \
+        -backend-config="key=${{ parameters.backendKey }}"
