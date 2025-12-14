@@ -23,6 +23,13 @@ steps:
       sudo mv terraform /usr/local/bin/
       terraform version
 
+- script: |
+    echo "RG = ${{ parameters.backendResourceGroup }}"
+    echo "SA = ${{ parameters.backendStorageAccount }}"
+    echo "CONTAINER = ${{ parameters.backendContainer }}"
+    echo "KEY = ${{ parameters.backendKey }}"
+  displayName: Debug Backend Values
+
 # -----------------------------
 # Terraform Init
 # -----------------------------
