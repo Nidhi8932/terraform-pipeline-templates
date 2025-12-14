@@ -41,3 +41,8 @@ steps:
     backendAzureRmContainerName: ${{ parameters.backendContainer }}
     backendAzureRmKey: ${{ parameters.backendKey }}
     commandOptions: '-reconfigure'
+  env:
+    ARM_SUBSCRIPTION_ID: $(AZ_SUBSCRIPTION_ID)
+    ARM_CLIENT_ID:       $(AZ_CLIENT_ID)
+    ARM_CLIENT_SECRET:   $(AZ_CLIENT_SECRET)
+    ARM_TENANT_ID:       $(AZ_TENANT_ID)
