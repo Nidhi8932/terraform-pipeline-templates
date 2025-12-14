@@ -26,29 +26,14 @@ steps:
 # -----------------------------
 # Terraform Init
 # -----------------------------
-- task: AzureCLI@2
+- task: TerraformTaskV4@4
   displayName: Terraform Init
   inputs:
-    azureSubscription: ${{ parameters.serviceConnection }}
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: |
-      set -e
-      cd ${{ parameters.workingDirectory }}
-
-      # -----------------------------
-      # Use SP / Federated credentials
-      # -----------------------------
-      export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
-      export ARM_TENANT_ID=$(az account show --query tenantId -o tsv)
-      export ARM_CLIENT_ID=$(az account show --query user.name -o tsv)
-      # ARM_CLIENT_SECRET not needed for federated SP
-
-      echo "Initializing Terraform backend..."
-      terraform init -migrate-state \
-        -backend-config="resource_group_name=${{ parameters.backendResourceGroup }}" \
-        -backend-config="storage_account_name=${{ parameters.backendStorageAccount }}" \
-        -backend-config="container_name=${{ parameters.backendContainer }}" \
-        -backend-config="key=${{ parameters.backendKey }}"
-
-      echo "Terraform backend initialized successfully."
+    provider: azurerm
+    command: init
+    workingDirectory: ${{ parameters.workingDirectory }}
+    backendServiceArm: ${{ parameters.serviceConnection }}
+    backendAzureRmResourceGroupName: ${{ parameters.backendResourceGroup }}
+    backendAzureRmStorageAccountName: ${{ parameters.backendStorageAccount }}
+    backendAzureRmContainerName: ${{ parameters.backendContainer }}
+    backendAzureRmKey: ${{ parameters.backendKey }}
