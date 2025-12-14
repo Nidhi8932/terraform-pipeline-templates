@@ -37,3 +37,4 @@ steps:
     backendAzureRmStorageAccountName: ${{ parameters.backendStorageAccount }}
     backendAzureRmContainerName: ${{ parameters.backendContainer }}
     backendAzureRmKey: ${{ parameters.backendKey }}
+    commandOptions: -reconfigure
