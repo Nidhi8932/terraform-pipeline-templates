@@ -3,13 +3,14 @@ parameters:
   serviceConnection: ''
 
 steps:
-- task: AzureCLI@2
-  displayName: Terraform Plan
+# -----------------------------
+# Terraform Plan
+# -----------------------------
+- task: TerraformTaskV4@4
+  displayName: 'Terraform Plan'
   inputs:
-    azureSubscription: ${{ parameters.serviceConnection }}
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: |
-      set -e
-      cd ${{ parameters.workingDirectory }}
-      terraform plan -var-file=var.tfvars -out=tfplan -input=false
+    provider: azurerm
+    command: plan
+    workingDirectory: ${{ parameters.workingDirectory }}
+    environmentServiceNameAzureRM: ${{ parameters.serviceConnection }}
+    commandOptions: '-var-file=var.tfvars -out=tfplan -input=false'

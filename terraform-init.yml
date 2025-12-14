@@ -17,7 +17,7 @@ steps:
     terraformVersion: ${{ parameters.terraformVersion }}
 
 # -----------------------------
-# Debug Backend Values
+# Debug Backend Values (optional but safe)
 # -----------------------------
 - script: |
     echo "RG = ${{ parameters.backendResourceGroup }}"
@@ -26,35 +26,18 @@ steps:
     echo "KEY = ${{ parameters.backendKey }}"
   displayName: 'Debug Backend Values'
 
-- task: AzureCLI@2
-  displayName: 'Check Storage Access'
-  inputs:
-    azureSubscription: $(AZURE_SERVICE_CONNECTION)
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: |
-      echo "Listing blobs in backend container..."
-      az storage blob list \
-        --account-name $(SA_NAME) \
-        --container-name $(CONTAINER_NAME) \
-        --output table
 # -----------------------------
-# Terraform Init
+# Terraform Init (ONLY THIS DOES AUTH)
 # -----------------------------
 - task: TerraformTaskV4@4
   displayName: 'Terraform Init'
   inputs:
-    provider: 'azurerm'
-    command: 'init'
+    provider: azurerm
+    command: init
     workingDirectory: ${{ parameters.workingDirectory }}
     backendServiceArm: ${{ parameters.serviceConnection }}
     backendAzureRmResourceGroupName: ${{ parameters.backendResourceGroup }}
     backendAzureRmStorageAccountName: ${{ parameters.backendStorageAccount }}
     backendAzureRmContainerName: ${{ parameters.backendContainer }}
     backendAzureRmKey: ${{ parameters.backendKey }}
-    commandOptions: '-reconfigure -input=false -no-color -verbose'
-  env:
-    ARM_SUBSCRIPTION_ID: $(AZ_SUBSCRIPTION_ID)
-    ARM_CLIENT_ID:       $(AZ_CLIENT_ID)
-    ARM_CLIENT_SECRET:   $(AZ_CLIENT_SECRET)
-    ARM_TENANT_ID:       $(AZ_TENANT_ID)
+    commandOptions: '-reconfigure -input=false -no-color'
