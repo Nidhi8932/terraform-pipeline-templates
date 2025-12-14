@@ -1,0 +1,14 @@
+parameters:
+workingDirectory: ''
+serviceConnection: ''
+
+
+steps:
+- task: TerraformTaskV4@4
+displayName: Terraform Plan
+inputs:
+provider: 'azurerm'
+command: 'plan'
+workingDirectory: ${{ parameters.workingDirectory }}
+environmentServiceNameAzureRM: ${{ parameters.serviceConnection }}
+commandOptions: '-out=tfplan'

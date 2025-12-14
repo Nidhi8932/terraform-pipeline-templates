@@ -1,0 +1,22 @@
+#This is Terraform Apply State
+
+parameters:
+workingDirectory: ''
+serviceConnection: ''
+
+
+steps:
+- task: TerraformTaskV4@4
+displayName: Terraform Apply
+condition: |
+and(
+succeeded(),
+eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+eq(variables['Build.Reason'], 'IndividualCI')
+)
+inputs:
+provider: 'azurerm'
+command: 'apply'
+workingDirectory: ${{ parameters.workingDirectory }}
+environmentServiceNameAzureRM: ${{ parameters.serviceConnection }}
+commandOptions: '-auto-approve'
