@@ -11,37 +11,33 @@ steps:
 # -----------------------------
 # Install Terraform
 # -----------------------------
-- task: Bash@3
-  displayName: Install Terraform
+- task: TerraformInstaller@0
+  displayName: 'Install Terraform'
   inputs:
-    targetType: inline
-    script: |
-      set -e
-      echo "Installing Terraform v${{ parameters.terraformVersion }}"
-      wget -q https://releases.hashicorp.com/terraform/${{ parameters.terraformVersion }}/terraform_${{ parameters.terraformVersion }}_linux_amd64.zip
-      unzip -q terraform_${{ parameters.terraformVersion }}_linux_amd64.zip
-      sudo mv terraform /usr/local/bin/
-      terraform version
+    terraformVersion: ${{ parameters.terraformVersion }}
 
+# -----------------------------
+# Debug Backend Values
+# -----------------------------
 - script: |
     echo "RG = ${{ parameters.backendResourceGroup }}"
     echo "SA = ${{ parameters.backendStorageAccount }}"
     echo "CONTAINER = ${{ parameters.backendContainer }}"
     echo "KEY = ${{ parameters.backendKey }}"
-  displayName: Debug Backend Values
+  displayName: 'Debug Backend Values'
 
 # -----------------------------
 # Terraform Init
 # -----------------------------
 - task: TerraformTaskV4@4
-  displayName: Terraform Init
+  displayName: 'Terraform Init'
   inputs:
-    provider: azurerm
-    command: init
+    provider: 'azurerm'
+    command: 'init'
     workingDirectory: ${{ parameters.workingDirectory }}
     backendServiceArm: ${{ parameters.serviceConnection }}
     backendAzureRmResourceGroupName: ${{ parameters.backendResourceGroup }}
     backendAzureRmStorageAccountName: ${{ parameters.backendStorageAccount }}
     backendAzureRmContainerName: ${{ parameters.backendContainer }}
     backendAzureRmKey: ${{ parameters.backendKey }}
-    commandOptions: -reconfigure
+    commandOptions: '-reconfigure'
