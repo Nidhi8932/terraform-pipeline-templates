@@ -30,7 +30,7 @@ steps:
       set -e
       cd ${{ parameters.workingDirectory }}
 
-      terraform init \
+      terraform init -migrate-state \
         -backend-config="resource_group_name=${{ parameters.backendResourceGroup }}" \
         -backend-config="storage_account_name=${{ parameters.backendStorageAccount }}" \
         -backend-config="container_name=${{ parameters.backendContainer }}" \
