@@ -52,7 +52,7 @@ steps:
     backendAzureRmStorageAccountName: ${{ parameters.backendStorageAccount }}
     backendAzureRmContainerName: ${{ parameters.backendContainer }}
     backendAzureRmKey: ${{ parameters.backendKey }}
-    commandOptions: '-reconfigure'
+    commandOptions: '-reconfigure -input=false -no-color -verbose'
   env:
     ARM_SUBSCRIPTION_ID: $(AZ_SUBSCRIPTION_ID)
     ARM_CLIENT_ID:       $(AZ_CLIENT_ID)
