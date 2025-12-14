@@ -12,4 +12,4 @@ steps:
     inlineScript: |
       set -e
       cd ${{ parameters.workingDirectory }}
-      terraform plan -out=tfplan
+      terraform plan -var-file=var.tfvars -out=tfplan -input=false
