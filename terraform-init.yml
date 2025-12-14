@@ -26,6 +26,18 @@ steps:
     echo "KEY = ${{ parameters.backendKey }}"
   displayName: 'Debug Backend Values'
 
+- task: AzureCLI@2
+  displayName: 'Check Storage Access'
+  inputs:
+    azureSubscription: $(AZURE_SERVICE_CONNECTION)
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      echo "Listing blobs in backend container..."
+      az storage blob list \
+        --account-name $(SA_NAME) \
+        --container-name $(CONTAINER_NAME) \
+        --output table
 # -----------------------------
 # Terraform Init
 # -----------------------------
