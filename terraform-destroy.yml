@@ -1,15 +1,13 @@
 parameters:
-workingDirectory: ''
-serviceConnection: ''
-
+  workingDirectory: ''
+  serviceConnection: ''
 
 steps:
 - task: TerraformTaskV4@4
-displayName: Terraform Destroy
-condition: and(succeeded(), eq(variables['RunDestroy'], 'true'))
-inputs:
-provider: 'azurerm'
-command: 'destroy'
-workingDirectory: ${{ parameters.workingDirectory }}
-environmentServiceNameAzureRM: ${{ parameters.serviceConnection }}
-commandOptions: '-auto-approve'
+  displayName: 'Terraform Destroy'
+  inputs:
+    provider: azurerm
+    command: destroy
+    workingDirectory: ${{ parameters.workingDirectory }}
+    environmentServiceNameAzureRM: ${{ parameters.serviceConnection }}
+    commandOptions: '-var-file=var.tfvars -auto-approve'
