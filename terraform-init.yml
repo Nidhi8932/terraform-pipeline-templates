@@ -8,27 +8,16 @@ parameters:
   backendKey: ''
 
 steps:
-# -----------------------------
-# Install Terraform
-# -----------------------------
 - task: TerraformInstaller@0
-  displayName: 'Install Terraform'
   inputs:
     terraformVersion: ${{ parameters.terraformVersion }}
 
-# -----------------------------
-# Debug Backend Values (optional but safe)
-# -----------------------------
 - script: |
-    echo "RG = ${{ parameters.backendResourceGroup }}"
-    echo "SA = ${{ parameters.backendStorageAccount }}"
-    echo "CONTAINER = ${{ parameters.backendContainer }}"
-    echo "KEY = ${{ parameters.backendKey }}"
-  displayName: 'Debug Backend Values'
+    rm -rf .terraform
+    rm -f .terraform.lock.hcl
+  displayName: 'Clean Terraform Cache'
+  workingDirectory: ${{ parameters.workingDirectory }}
 
-# -----------------------------
-# Terraform Init (ONLY THIS DOES AUTH)
-# -----------------------------
 - task: TerraformTaskV4@4
   displayName: 'Terraform Init'
   inputs:
@@ -40,4 +29,4 @@ steps:
     backendAzureRmStorageAccountName: ${{ parameters.backendStorageAccount }}
     backendAzureRmContainerName: ${{ parameters.backendContainer }}
     backendAzureRmKey: ${{ parameters.backendKey }}
-    commandOptions: '-reconfigure -input=false -no-color'
+    commandOptions: '-reconfigure'

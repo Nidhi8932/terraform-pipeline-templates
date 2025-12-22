@@ -3,9 +3,6 @@ parameters:
   serviceConnection: ''
 
 steps:
-# -----------------------------
-# Terraform Apply
-# -----------------------------
 - task: TerraformTaskV4@4
   displayName: 'Terraform Apply'
   inputs:
@@ -13,4 +10,4 @@ steps:
     command: apply
     workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceNameAzureRM: ${{ parameters.serviceConnection }}
-    commandOptions: '-auto-approve tfplan'
+    commandOptions: '-input=false tfplan'
